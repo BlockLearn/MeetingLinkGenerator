@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="">
+  <meta name="author" content="">
+  <title>Title Page</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+  <link rel="stylesheet" type="text/css" href="css/multi-select.css">
+</head>
+<body>
+  <select id='pre-selected-options' multiple='multiple'>
+    	<option value='%22microphone%22' selected>microphone</option>
+	<option value='%22camera%22' selected>camera</option>
+	<option value='%22closedcaptions%22'>closedcaptions</option>
+	<option value='%22desktop%22' >desktop</option>
+	<option value='%22fullscreen%22' selected>fullscreen</option>
+	<option value='%22fodeviceselection%22'>fodeviceselection</option>
+	<option value='%22hangup%22' selected>hangup</option>
+	<option value='%22profile%22'>profile</option>
+	<option value='%22info%22'>info</option>
+	<option value='%22chat%22' selected>chat</option>
+	<option value='%22recording%22'>recording</option>
+	<option value='%22livestreaming%22'>livestreaming</option>
+	<option value='%22etherpad%22'>etherpad</option>
+	<option value='%22sharedvideo%22'>sharedvideo</option>
+	<option value='%22settings%22' selected>settings</option>
+	<option value='%22raisehand%22'>raisehand</option>
+	<option value='%22videoquality%22' selected>videoquality</option>
+	<option value='%22filmstrip%22'>filmstrip</option>
+	<option value='%22invite%22'>invite</option>
+	<option value='%22feedback%22'>feedback</option>
+	<option value='%22stats%22'>stats</option>
+	<option value='%22shortcuts%22'>shortcuts</option>
+	<option value='%22tileview%22'>tileview</option>
+	<option value='%22videobackgroundblur%22'>videobackgroundblur</option>
+	<option value='%22download%22'>download</option>
+	<option value='%22help%22'>help</option>
+  </select>
+  <!-- ends -->
+  <!-- jQuery -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0/jquery.min.js"></script>
+  <!-- Bootstrap JavaScript -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0-alpha/js/bootstrap.min.js"></script>
+  <script src="js/jquery.multi-select.js"></script>
+  <script src="js/jquery.quicksearch.js"></script>
+  <script type="text/javascript">
+  // run pre selected options
+  $('#pre-selected-options').multiSelect({
+			  selectableHeader: "<input type='text' class='search-input' autocomplete='off' placeholder='search'>",
+			  selectionHeader: "<input type='text' class='search-input' autocomplete='off' placeholder='search'>",
+			  afterInit: function(ms){
+			    var that = this,
+			        $selectableSearch = that.$selectableUl.prev(),
+			        $selectionSearch = that.$selectionUl.prev(),
+			        selectableSearchString = '#'+that.$container.attr('id')+' .ms-elem-selectable:not(.ms-selected)',
+			        selectionSearchString = '#'+that.$container.attr('id')+' .ms-elem-selection.ms-selected';
+
+			    that.qs1 = $selectableSearch.quicksearch(selectableSearchString)
+			    .on('keydown', function(e){
+			      if (e.which === 40){
+			        that.$selectableUl.focus();
+			        return false;
+			      }
+			    });
+
+			    that.qs2 = $selectionSearch.quicksearch(selectionSearchString)
+			    .on('keydown', function(e){
+			      if (e.which == 40){
+			        that.$selectionUl.focus();
+			        return false;
+			      }
+			    });
+			  },
+			  afterSelect: function(){
+			    this.qs1.cache();
+			    this.qs2.cache();
+			  },
+			  afterDeselect: function(){
+			    this.qs1.cache();
+			    this.qs2.cache();
+			  }
+			});
+  </script>
+</body>
+
+</html>

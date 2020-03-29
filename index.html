@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+
+		<title>BlockLearn | Meeting Link Generator</title>
+
+		<meta name="description" content="Generator">
+		<meta name="author" content="BlockLearn">
+
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+  	<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+  	<link rel="stylesheet" type="text/css" href="css/multi-select.css">
+
+		<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.10.2/css/all.css" integrity="sha384-rtJEYb85SiYWgfpCr0jn174XgJTn4rptSOQsMroFBPQSGLdOC5IbubP6lJ35qoM9" crossorigin="anonymous">
+
+	</head>
+
+	<body>
+<div class="container">
+		
+
+		<div class="text-center row">
+			<div>
+				<img src="https://blog.blocklearn.xyz/wp-content/uploads/2020/03/cropped-blocklearn-logo-lq.png" /><br>
+				<h2>Meeting Link Generator</h2>
+			</div>
+			<div class="col col-sm-3"></div>
+			<div class="col col-sm-6">
+			<form id="generator-form" action="#">
+				  <div class="form-group">
+				    <label for="appName"><h3>Your App Name</h3></label>
+				    <input class="form-control" id="appName" placeholder="Enter your app name" value="Blocklearn" required>
+				  </div>
+				  <div class="form-group">
+				    <label for="participantName"><h3>Default Participant Name</h3></label>
+				    <input class="form-control" id="participantName" placeholder="Enter your app name" value="Fellow Learner" required>
+				  </div>
+				  <div class="form-group">
+
+					<h3>Select Toolbar Buttons Options</h3>
+					<h6>Selected ones appear on the right side</h6>
+					<iframe id="selection-toolbar" src="./selection-toolbar.html" width="375px" height="230px"></iframe><br>
+					<button id="btn-selection-toolbar" class="btn btn-primary" type="button" onclick="submitSelectionToolbar()">Submit</button><br><br>
+				  </div>
+				  <div class="form-group">
+
+						<h3>Select Settings Options</h3>
+						<h6>Selected ones appear on the right side</h6>
+						<iframe id="selection-settings" src="./selection-settings.html" width="375px" height="230px"></iframe><br>
+						<button id="btn-selection-settings" class="btn btn-primary" type="button" onclick="submitSelectionSettings()">Submit</button>
+				</div>
+				<div class="form-group">
+				  	<label class="btn btn-primary">
+						<input id="watermark-check" type="checkbox" autocomplete="off">
+						<span>Show Jitsi watermark</span>
+					</label>
+				</div>
+
+						<button class="btn btn-success" type="button" onclick="generateLink()"><h3>Generate</h3></button><br><br>
+			</form> 					
+			</div>
+			<div class="col col-sm-3"></div>
+			</div>
+
+			<div class="text-center row">
+				<div class="col col-sm-3"></div>
+				<div class="col col-sm-6">
+					<p>Here is your link, copy and paste it into your <code>_config.yml</code> file</p>
+					<textarea id="generated-link" class="form-control"></textarea><br><br>
+				</div>
+				<div class="col col-sm-3"></div>
+			</div>
+		</div>
+
+
+
+		<script>
+			var selectionToolbar, selectionSettings;
+			function submitSelectionToolbar() {
+				var iframe = document.getElementById('selection-toolbar');
+				var innerDoc = iframe.contentDocument || iframe.contentWindow.document;
+				var userSelections = Array.prototype.slice.call( innerDoc.getElementById('pre-selected-options').selectedOptions );
+
+				var userSelectionsAsArray = userSelections.map(obj =>{
+				   newValue = obj.value;
+				   return newValue;
+				});
+
+				document.getElementById("btn-selection-toolbar").className = "btn btn-success"; 
+				console.log(userSelectionsAsArray);
+				selectionToolbar=userSelectionsAsArray;
+
+			}
+			function submitSelectionSettings() {
+				var iframe = document.getElementById('selection-settings');
+				var innerDoc = iframe.contentDocument || iframe.contentWindow.document;
+				var userSelections = Array.prototype.slice.call( innerDoc.getElementById('pre-selected-options').selectedOptions );
+
+				var userSelectionsAsArray = userSelections.map(obj =>{
+				   newValue = obj.value;
+				   return newValue;
+				});
+
+				document.getElementById("btn-selection-settings").className = "btn btn-success"; 
+				console.log(userSelectionsAsArray);
+				selectionSettings=userSelectionsAsArray;
+
+			}
+			function makeid(length) {
+			   var result           = '';
+			   var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+			   var charactersLength = characters.length;
+			   for ( var i = 0; i < length; i++ ) {
+			      result += characters.charAt(Math.floor(Math.random() * charactersLength));
+			   }
+			   return result;
+			}
+			function generateLink() {
+				var appName = encodeURI(document.getElementById("appName").value);
+				var showJitsiWatermark = document.getElementById("watermark-check").checked;
+				var appNameText = "interfaceConfig.APP_NAME=%22" + appName + "%22&amp;";
+				var participantNameText = "interfaceConfig.DEFAULT_REMOTE_DISPLAY_NAME=%22" + encodeURI(document.getElementById("participantName").value) + "%22&amp;";
+				var selectionToolbarText = "interfaceConfig.TOOLBAR_BUTTONS=%5B" + selectionToolbar.join("%2C") + "%5D&amp;";
+				var selectionSettingsText = "interfaceConfig.SETTINGS_SECTIONS=%5B" + selectionToolbar.join("%2C") + "%5D&amp;";
+				var showJitsiWatermarkText = "interfaceConfig.SHOW_JITSI_WATERMARK="+ showJitsiWatermark + "&amp;interfaceConfig.SHOW_WATERMARK_FOR_GUESTS=" + showJitsiWatermark + "&amp;" ;
+				var link = "https://meet.jit.si/" + appName + "-" + makeid(12) + "#jitsi_meet_external_api_id=0&amp;config.getroomnode=undefined&amp;" + appNameText + participantNameText + selectionToolbarText + selectionSettingsText + showJitsiWatermarkText + "interfaceConfig.filmStripOnly=false";
+				document.getElementById("generated-link").value = link;
+			}
+			function showSelection() {
+				console.log(selectionToolbar);
+				console.log(selectionSettings);
+				console.log(makeid(12));
+
+			}
+		</script>
+
+	</body>
+</html>
